@@ -532,6 +532,19 @@ function importTasks(event) {
     onchange="importTasks(event)"
   >
 </div>
+  
+<div style="margin: 20px 0; display: flex; gap: 10px; flex-wrap: wrap;">
+  <button type="button" style="background:#6C4DFF;color:#FFFFFF;padding:10px 16px;border:0;border-radius:8px;cursor:pointer;" onclick="exportTasks()">Export Tasks</button>
+  <button type="button" style="background:#6C4DFF;color:#FFFFFF;padding:10px 16px;border:0;border-radius:8px;cursor:pointer;" onclick="document.getElementById('importTasksFile').click()">Import Tasks</button>
+  <input
+    type="file"
+    id="importTasksFile"
+    accept=".json,application/json"
+    style="display:none;"
+    onchange="importTasks(event)"
+  >
+</div>
+
 
 </body>
 </html>
