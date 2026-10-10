@@ -1,1 +1,413 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StudySprint | Study Planner</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 32px 16px;
+      background: #f3f5fb;
+      color: #20243a;
+      font-family: Arial, sans-serif;
+    }
+
+    .app {
+      max-width: 680px;
+      margin: auto;
+    }
+
+    header { margin-bottom: 24px; }
+
+    .tag {
+      color: #5c55d8;
+      font-weight: bold;
+      font-size: 13px;
+      letter-spacing: 1px;
+    }
+
+    h1 { margin: 8px 0; font-size: 34px; }
+    .subtitle { color: #6b7085; line-height: 1.5; }
+
+    .panel {
+      background: white;
+      border-radius: 16px;
+      padding: 22px;
+      margin-bottom: 18px;
+      box-shadow: 0 4px 18px #20243a0a;
+    }
+
+    h2 { font-size: 18px; margin: 0 0 16px; }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+
+    input, select, button {
+      font: inherit;
+      border-radius: 9px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 11px;
+      border: 1px solid #dfe2ee;
+      background: white;
+      color: #20243a;
+    }
+
+    input:focus, select:focus {
+      outline: 2px solid #aaa5ff;
+      border-color: #5c55d8;
+    }
+
+    .field { margin-bottom: 14px; }
+
+    .two {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    button {
+      padding: 11px 14px;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .primary {
+      width: 100%;
+      background: #5c55d8;
+      color: white;
+    }
+
+    button:hover { opacity: 0.88; }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .stat {
+      background: white;
+      border-radius: 12px;
+      padding: 16px 10px;
+      text-align: center;
+    }
+
+    .number {
+      display: block;
+      font-size: 25px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .stat-label { color: #777b8f; font-size: 12px; }
+
+    .progress-track {
+      height: 9px;
+      background: #e8e7f6;
+      border-radius: 20px;
+      overflow: hidden;
+      margin: 10px 0;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: #5c55d8;
+      transition: width 0.2s;
+    }
+
+    .progress-caption {
+      color: #777b8f;
+      font-size: 13px;
+    }
+
+    .task {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 15px 0;
+      border-bottom: 1px solid #eeeef5;
+    }
+
+    .task:last-child { border-bottom: none; }
+
+    .task-check {
+      width: 19px;
+      height: 19px;
+      margin-top: 2px;
+      accent-color: #5c55d8;
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+
+    .task-main { flex: 1; min-width: 0; }
+    .task-name { font-weight: bold; overflow-wrap: anywhere; }
+    .task-meta { margin-top: 7px; font-size: 12px; color: #777b8f; }
+
+    .completed .task-name {
+      text-decoration: line-through;
+      color: #9295a5;
+    }
+
+    .priority {
+      display: inline-block;
+      padding: 4px 7px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: bold;
+      margin-right: 5px;
+    }
+
+    .high { background: #ffebeb; color: #bd3434; }
+    .medium { background: #fff2d9; color: #936000; }
+    .low { background: #e5f7ed; color: #247449; }
+
+    .delete {
+      background: #f0f1f7;
+      color: #555a70;
+      padding: 7px 9px;
+      font-size: 12px;
+    }
+
+    .empty {
+      color: #85899c;
+      text-align: center;
+      padding: 24px 8px;
+      line-height: 1.5;
+    }
+
+    .footer {
+      color: #85899c;
+      text-align: center;
+      font-size: 12px;
+      padding: 8px;
+    }
+
+    @media (max-width: 420px) {
+      h1 { font-size: 29px; }
+      .panel { padding: 17px; }
+      .two { grid-template-columns: 1fr; gap: 0; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header>
+      <div class="tag">YOUR PERSONAL STUDY PLANNER</div>
+      <h1>StudySprint ⚡</h1>
+      <p class="subtitle">Small study sessions. Real progress. One task at a time.</p>
+    </header>
+
+    <section class="stats" aria-label="Study statistics">
+      <div class="stat">
+        <span class="number" id="total">0</span>
+        <span class="stat-label">Total tasks</span>
+      </div>
+      <div class="stat">
+        <span class="number" id="done">0</span>
+        <span class="stat-label">Completed</span>
+      </div>
+      <div class="stat">
+        <span class="number" id="minutes">0</span>
+        <span class="stat-label">Minutes planned</span>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Today's progress</h2>
+      <div class="progress-track">
+        <div class="progress-fill" id="progress"></div>
+      </div>
+      <div class="progress-caption" id="progressText">Add your first task to get started.</div>
+    </section>
+
+    <section class="panel">
+      <h2>Add a study task</h2>
+      <form id="taskForm">
+        <div class="field">
+          <label for="taskName">What do you need to study?</label>
+          <input id="taskName" type="text" maxlength="100"
+            placeholder="e.g. Revise algebra" required>
+        </div>
+
+        <div class="two">
+          <div class="field">
+            <label for="duration">Duration (minutes)</label>
+            <input id="duration" type="number" min="1" max="600"
+              value="25" required>
+          </div>
+          <div class="field">
+            <label for="priority">Priority</label>
+            <select id="priority">
+              <option value="High">High</option>
+              <option value="Medium" selected>Medium</option>
+              <option value="Low">Low</option>
+            </select>
+          </div>
+        </div>
+
+        <button class="primary" type="submit">+ Add task</button>
+      </form>
+    </section>
+
+    <section class="panel">
+      <h2>Your task list</h2>
+      <div id="taskList" aria-live="polite">
+        <div class="empty">No tasks yet. Add one above and start your sprint.</div>
+      </div>
+    </section>
+
+    <p class="footer">StudySprint · Your progress is saved in this browser.</p>
+  </main>
+
+  <script>
+    const STORAGE_KEY = "studysprint-tasks-v1";
+    const form = document.getElementById("taskForm");
+    const nameInput = document.getElementById("taskName");
+    const durationInput = document.getElementById("duration");
+    const priorityInput = document.getElementById("priority");
+    const taskList = document.getElementById("taskList");
+
+    let tasks = [];
+
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      const parsed = saved ? JSON.parse(saved) : [];
+      if (Array.isArray(parsed)) {
+        tasks = parsed.filter(task =>
+          task &&
+          typeof task.id === "string" &&
+          typeof task.name === "string" &&
+          Number.isFinite(task.duration) &&
+          task.duration > 0 &&
+          ["High", "Medium", "Low"].includes(task.priority) &&
+          typeof task.completed === "boolean"
+        );
+      }
+    } catch (error) {
+      tasks = [];
+    }
+
+    function saveTasks() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+      } catch (error) {
+        alert("Your browser could not save the tasks. Check its storage settings.");
+      }
+    }
+
+    function createElement(tag, className, text) {
+      const element = document.createElement(tag);
+      if (className) element.className = className;
+      if (text !== undefined) element.textContent = text;
+      return element;
+    }
+
+    function render() {
+      const completed = tasks.filter(task => task.completed).length;
+      const totalMinutes = tasks.reduce((sum, task) => sum + task.duration, 0);
+      const percent = tasks.length ? Math.round(completed / tasks.length * 100) : 0;
+
+      document.getElementById("total").textContent = tasks.length;
+      document.getElementById("done").textContent = completed;
+      document.getElementById("minutes").textContent = totalMinutes;
+      document.getElementById("progress").style.width = percent + "%";
+      document.getElementById("progressText").textContent =
+        tasks.length ? `${percent}% complete · ${completed} of ${tasks.length} tasks finished`
+        : "Add your first task to get started.";
+
+      taskList.replaceChildren();
+
+      if (tasks.length === 0) {
+        taskList.appendChild(createElement(
+          "div", "empty", "No tasks yet. Add one above and start your sprint."
+        ));
+        return;
+      }
+
+      tasks.forEach(task => {
+        const row = createElement("div", "task" + (task.completed ? " completed" : ""));
+        const checkbox = createElement("input", "task-check");
+        checkbox.type = "checkbox";
+        checkbox.checked = task.completed;
+        checkbox.setAttribute("aria-label", "Mark " + task.name + " complete");
+
+        checkbox.addEventListener("change", () => {
+          task.completed = checkbox.checked;
+          saveTasks();
+          render();
+        });
+
+        const main = createElement("div", "task-main");
+        const title = createElement("div", "task-name", task.name);
+        const meta = createElement("div", "task-meta");
+        const priority = createElement(
+          "span", "priority " + task.priority.toLowerCase(), task.priority
+        );
+        meta.append(priority, document.createTextNode(` ${task.duration} minutes`));
+        main.append(title, meta);
+
+        const remove = createElement("button", "delete", "Delete");
+        remove.type = "button";
+        remove.addEventListener("click", () => {
+          tasks = tasks.filter(item => item.id !== task.id);
+          saveTasks();
+          render();
+        });
+
+        row.append(checkbox, main, remove);
+        taskList.appendChild(row);
+      });
+    }
+
+    form.addEventListener("submit", event => {
+      event.preventDefault();
+
+      const name = nameInput.value.trim();
+      const duration = Number(durationInput.value);
+
+      if (!name) {
+        nameInput.focus();
+        return;
+      }
+
+      if (!Number.isInteger(duration) || duration < 1 || duration > 600) {
+        alert("Enter a whole number of minutes from 1 to 600.");
+        durationInput.focus();
+        return;
+      }
+
+      tasks.push({
+        id: Date.now().toString() + "-" + Math.random().toString(36).slice(2),
+        name,
+        duration,
+        priority: priorityInput.value,
+        completed: false
+      });
+
+      saveTasks();
+      render();
+      form.reset();
+      durationInput.value = 25;
+      priorityInput.value = "Medium";
+      nameInput.focus();
+    });
+
+    render();
+  </script>
+</body>
+</html>
+
