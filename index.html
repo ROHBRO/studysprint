@@ -453,7 +453,86 @@ button {
     });
 
     render();
+    
+function exportTasks() {
+  const data = JSON.stringify(tasks, null, 2);
+  const blob = new Blob([data], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "studysprint-tasks.json";
+  link.click();
+
+  URL.revokeObjectURL(url);
+}
+
+function importTasks(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+
+  reader.onload = function () {
+    try {
+      const imported = JSON.parse(reader.result);
+
+      if (!Array.isArray(imported)) {
+        throw new Error("Invalid task file");
+      }
+
+      const validTasks = imported.filter(task =>
+        task &&
+        typeof task.id === "string" &&
+        typeof task.name === "string" &&
+        Number.isFinite(task.duration) &&
+        task.duration > 0 &&
+        ["High", "Medium", "Low"].includes(task.priority) &&
+        typeof task.completed === "boolean"
+      );
+
+      if (validTasks.length !== imported.length) {
+        alert("Import cancelled: the file contains invalid tasks.");
+        return;
+      }
+
+      if (!confirm("Importing will replace the tasks currently saved on this device. Continue?")) {
+        return;
+      }
+
+      tasks = validTasks;
+      saveTasks();
+
+      if (typeof renderTasks === "function") {
+        renderTasks();
+      } else {
+        location.reload();
+      }
+
+      alert("Tasks imported successfully!");
+    } catch (error) {
+      alert("Could not import this file. Make sure it is a valid StudySprint export.");
+    }
+  };
+
+  reader.readAsText(file);
+  event.target.value = "";
+}
+
   </script>
+  
+<div style="margin: 20px 0; display: flex; gap: 10px; flex-wrap: wrap;">
+  <button type="button" onclick="exportTasks()">Export Tasks</button>
+  <button type="button" onclick="document.getElementById('importTasksFile').click()">Import Tasks</button>
+  <input
+    type="file"
+    id="importTasksFile"
+    accept=".json,application/json"
+    style="display: none;"
+    onchange="importTasks(event)"
+  >
+</div>
+
 </body>
 </html>
 
