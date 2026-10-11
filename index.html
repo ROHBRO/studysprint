@@ -388,14 +388,24 @@ button {
       }
 
       [...tasks]
-  .sort((a, b) => {
-    const priorityRank = { High: 3, Medium: 2, Low: 1 };
+  
+.sort((a, b) => {
+  const priorityRank = {
+    High: 3,
+    Medium: 2,
+    Low: 1,
+    None: 0,
+    "": 0
+  };
 
-    return (
-      priorityRank[b.priority] - priorityRank[a.priority] ||
-      b.duration - a.duration
-    );
-  })
+  return (
+    (priorityRank[b.priority] ?? 0) -
+      (priorityRank[a.priority] ?? 0) ||
+    b.duration - a.duration ||
+    a.name.localeCompare(b.name)
+  );
+})
+
   .forEach(task => {
         const row = createElement("div", "task" + (task.completed ? " completed" : ""));
         const checkbox = createElement("input", "task-check");
