@@ -387,37 +387,28 @@ button {
         return;
       }
 
+      
       [...tasks]
-  
-.sort((a, b) => {
-  const priorityRank = {
-    High: 3,
-    Medium: 2,
-    Low: 1,
-    None: 0,
-    "": 0
-  };
+        .sort((a, b) => {
+          const priorityRank = {
+            High: 3,
+            Medium: 2,
+            Low: 1,
+            "": 0
+          };
 
-  
-.sort((a, b) => {
-  const priorityRank = {
-    High: 3,
-    Medium: 2,
-    Low: 1,
-    "": 0
-  };
+          return (
+            (priorityRank[b.priority] ?? 0) -
+              (priorityRank[a.priority] ?? 0) ||
+            b.duration - a.duration ||
+            a.name.trim().localeCompare(
+              b.name.trim(),
+              undefined,
+              { sensitivity: "base" }
+            )
+          );
+        })
 
-  return (
-    (priorityRank[b.priority] ?? 0) -
-      (priorityRank[a.priority] ?? 0) ||
-    b.duration - a.duration ||
-    a.name.trim().localeCompare(
-      b.name.trim(),
-      undefined,
-      { sensitivity: "base" }
-    )
-  );
-})
 
   .forEach(task => {
         const row = createElement("div", "task" + (task.completed ? " completed" : ""));
@@ -435,11 +426,18 @@ button {
         const main = createElement("div", "task-main");
         const title = createElement("div", "task-name", task.name);
         const meta = createElement("div", "task-meta");
-        const priority = createElement(
-          "span", "priority " + task.priority.toLowerCase(), task.priority
-        );
-        meta.append(priority, document.createTextNode(` ${task.duration} minutes`));
-        main.append(title, meta);
+        
+        if (task.priority) {
+          const priority = createElement(
+            "span",
+            "priority " + task.priority.toLowerCase(),
+            task.priority
+          );
+          meta.append(priority, document.createTextNode(" "));
+        }
+
+        meta.append(document.createTextNode(`${task.duration} minutes`));
+
 
         const remove = createElement("button", "delete", "Delete");
         remove.type = "button";
@@ -504,7 +502,9 @@ function exportTasks() {
   link.download = "studysprint-tasks.json";
   link.click();
 
-  URL.revokeObjectURL(url);
+  
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+
 }
 
 function importTasks(event) {
@@ -543,11 +543,9 @@ function importTasks(event) {
       tasks = validTasks;
       saveTasks();
 
-      if (typeof renderTasks === "function") {
-        renderTasks();
-      } else {
-        location.reload();
-      }
+      
+      render();
+
 
       alert("Tasks imported successfully!");
     } catch (error) {
