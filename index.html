@@ -398,11 +398,24 @@ button {
     "": 0
   };
 
+  
+.sort((a, b) => {
+  const priorityRank = {
+    High: 3,
+    Medium: 2,
+    Low: 1,
+    "": 0
+  };
+
   return (
     (priorityRank[b.priority] ?? 0) -
       (priorityRank[a.priority] ?? 0) ||
     b.duration - a.duration ||
-    a.name.localeCompare(b.name)
+    a.name.trim().localeCompare(
+      b.name.trim(),
+      undefined,
+      { sensitivity: "base" }
+    )
   );
 })
 
@@ -458,7 +471,7 @@ if (!priorityInput.value) {
   return;
 }
       if (!Number.isInteger(duration) || duration < 1 || duration > 1440) {
-        alert("Enter a whole number of minutes from 1 to 600.");
+        alert("Enter a whole number of minutes from 1 to 1440.");
         durationInput.focus();
         return;
       }
