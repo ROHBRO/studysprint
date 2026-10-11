@@ -292,8 +292,10 @@ button {
         <div class="two">
           <div class="field">
             <label for="duration">Duration (minutes)</label>
-            <input id="duration" type="number" min="1" max="600"
-              value="25" required>
+            
+ <input id="duration" type="number" min="1" max="1440"
+  placeholder="Enter time" required>
+
           </div>
           <div class="field">
             <label for="priority">Priority</label>
@@ -439,7 +441,7 @@ button {
         return;
       }
 
-      if (!Number.isInteger(duration) || duration < 1 || duration > 600) {
+      if (!Number.isInteger(duration) || duration < 1 || duration > 1440) {
         alert("Enter a whole number of minutes from 1 to 600.");
         durationInput.focus();
         return;
@@ -456,7 +458,7 @@ button {
       saveTasks();
       render();
       form.reset();
-      durationInput.value = 25;
+    
       priorityInput.value = "Medium";
       nameInput.focus();
     });
