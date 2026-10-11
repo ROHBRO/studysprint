@@ -372,7 +372,14 @@ button {
 
       document.getElementById("total").textContent = tasks.length;
       document.getElementById("done").textContent = completed;
-      document.getElementById("minutes").textContent = totalMinutes;
+      function formatDuration(minutes) {
+  const hours = Math.floor(minutes / 60);
+  const remainingMinutes = minutes % 60;
+
+  if (hours === 0) return `${remainingMinutes} min`;
+  if (remainingMinutes === 0) return `${hours} hr`;
+  return `${hours} hr ${remainingMinutes} min`;
+}
       document.getElementById("progress").style.width = percent + "%";
       document.getElementById("progressText").textContent =
         tasks.length ? `${percent}% complete · ${completed} of ${tasks.length} tasks finished`
@@ -465,16 +472,18 @@ button {
   return;
 }
 
+
+if (!Number.isInteger(duration) || duration < 1 || duration > 1440) {
+  alert("Enter a whole number of minutes from 1 to 1440.");
+  durationInput.focus();
+  return;
+}
+
 if (!priorityInput.value) {
   alert("Please select a priority.");
   priorityInput.focus();
   return;
 }
-      if (!Number.isInteger(duration) || duration < 1 || duration > 1440) {
-        alert("Enter a whole number of minutes from 1 to 1440.");
-        durationInput.focus();
-        return;
-      }
 
       tasks.push({
         id: Date.now().toString() + "-" + Math.random().toString(36).slice(2),
