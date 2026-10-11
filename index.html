@@ -443,7 +443,7 @@ button {
           meta.append(priority, document.createTextNode(" "));
         }
 
-        meta.append(document.createTextNode(`${task.duration} minutes`));
+        meta.append(document.createTextNode(formatDuration(task.duration)));
     
         main.append(title, meta);
     
