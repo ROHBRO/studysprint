@@ -437,8 +437,9 @@ button {
         }
 
         meta.append(document.createTextNode(`${task.duration} minutes`));
-
-
+    
+        main.append(title, meta);
+    
         const remove = createElement("button", "delete", "Delete");
         remove.type = "button";
         remove.addEventListener("click", () => {
