@@ -300,8 +300,9 @@ button {
           <div class="field">
             <label for="priority">Priority</label>
             <select id="priority">
+             <option value="" selected disabled>Select priority</option>
               <option value="High">High</option>
-              <option value="Medium" selected>Medium</option>
+              <option value="Medium">Medium</option>
               <option value="Low">Low</option>
             </select>
           </div>
@@ -459,7 +460,7 @@ button {
       render();
       form.reset();
     
-      priorityInput.value = "Medium";
+     
       nameInput.focus();
     });
 
