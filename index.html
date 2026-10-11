@@ -342,7 +342,7 @@ button {
           typeof task.name === "string" &&
           Number.isFinite(task.duration) &&
           task.duration > 0 &&
-          ["High", "Medium", "Low"].includes(task.priority) &&
+          ["High", "Medium", "Low", ""].includes(task.priority) &&
           typeof task.completed === "boolean"
         );
       }
@@ -448,10 +448,15 @@ button {
       const duration = Number(durationInput.value);
 
       if (!name) {
-        nameInput.focus();
-        return;
-      }
+  nameInput.focus();
+  return;
+}
 
+if (!priorityInput.value) {
+  alert("Please select a priority.");
+  priorityInput.focus();
+  return;
+}
       if (!Number.isInteger(duration) || duration < 1 || duration > 1440) {
         alert("Enter a whole number of minutes from 1 to 600.");
         durationInput.focus();
