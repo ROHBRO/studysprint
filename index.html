@@ -286,7 +286,7 @@ button {
         <div class="field">
           <label for="taskName">What do you need to study?</label>
           <input id="taskName" type="text" maxlength="100"
-            placeholder="e.g. Revise algebra" required>
+            placeholder="Enter task name" required>
         </div>
 
         <div class="two">
@@ -460,6 +460,7 @@ button {
       const duration = Number(durationInput.value);
 
       if (!name) {
+  alert("Please enter a task name.");
   nameInput.focus();
   return;
 }
